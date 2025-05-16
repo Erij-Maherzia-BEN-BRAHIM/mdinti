@@ -142,7 +142,7 @@ export function ActivitiesSection() {
 
   return (
     <section id="activities" className="py-16 md:py-24 bg-muted/50 px-8">
-      <div className="container">
+      <div>
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="inline-block rounded-lg bg-[#ffc845]/20 px-3 py-1 text-sm text-[#ffc845]">
             Nos Activités

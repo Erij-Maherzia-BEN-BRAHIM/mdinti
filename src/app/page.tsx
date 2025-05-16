@@ -14,6 +14,7 @@ import { ThemeSwitcher } from "@/components/theme-switcher";
 import { MembersCarousel } from "@/components/members-carousel";
 import { ActivitiesSection } from "@/components/activities-section";
 import { ContactForm } from "@/components/contact-form";
+import { PartnersSection } from "@/components/partners-section";
 
 export default function Home() {
   return (
@@ -163,42 +164,11 @@ export default function Home() {
                 architecture, history, economics, and community development.
               </p>
             </div>
-            <MembersCarousel />
+          <MembersCarousel />
           </div>
         </section>
 
-        <section id="partners" className="py-16 md:py-24">
-          <div className="px-8">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="inline-block rounded-lg bg-[#ffc845]/20 px-3 py-1 text-sm text-[#ffc845]">
-                Our Partners
-              </div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-                Working Together for Médina
-              </h2>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                We collaborate with local and international organizations to
-                achieve our goals.
-              </p>
-            </div>
-            <div className="mt-12 grid grid-cols-2 gap-8 md:grid-cols-4">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-center p-6 bg-background rounded-lg border"
-                >
-                  <Image
-                    src={`/placeholder.svg?height=80&width=160&text=Partner+${i}`}
-                    alt={`Partner ${i}`}
-                    width={160}
-                    height={80}
-                    className="max-h-12 w-auto"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <PartnersSection />
 
         <ActivitiesSection />
 

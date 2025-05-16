@@ -229,7 +229,7 @@ export default function Home() {
                     href="#team"
                     className="text-muted-foreground hover:text-foreground"
                   >
-                    Our Members
+                    Our Team
                   </Link>
                 </li>
                 <li>

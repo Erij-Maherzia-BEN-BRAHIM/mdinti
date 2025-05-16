@@ -12,10 +12,10 @@ import {
   Linkedin,
   Globe,
 } from "lucide-react";
-import { useMembers } from "@/hooks/useMembers";
+import { useTeamMembers } from "@/hooks/useTeamMembers";
 
 export function MembersCarousel() {
-  const { members, isLoadingMembers } = useMembers();
+  const { members, isLoadingMembers } = useTeamMembers();
   const carouselRef = useRef<HTMLDivElement>(null);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
@@ -103,7 +103,7 @@ export function MembersCarousel() {
   if (isLoadingMembers) {
     return (
       <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">Loading members...</p>
+        <p className="text-muted-foreground">Loading team members...</p>
       </div>
     );
   }
@@ -111,7 +111,7 @@ export function MembersCarousel() {
   if (members.length === 0) {
     return (
       <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">No members found</p>
+        <p className="text-muted-foreground">No team members found</p>
       </div>
     );
   }

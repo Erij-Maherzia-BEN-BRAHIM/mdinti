@@ -40,10 +40,10 @@ export default function Home() {
               Who We Are
             </Link>
             <Link
-              href="#members"
+              href="#team"
               className="text-sm font-medium hover:text-primary"
             >
-              Members
+              Team
             </Link>
             <Link
               href="#partners"
@@ -150,11 +150,11 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="members" className="py-16 md:py-24 bg-muted/50">
+        <section id="team" className="py-16 md:py-24 bg-muted/50">
           <div className="px-8">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="inline-block rounded-lg bg-[#ffc845]/20 px-3 py-1 text-sm text-[#ffc845]">
-                Our Members
+                Our Team
               </div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                 The Team Behind mdinti
@@ -226,7 +226,7 @@ export default function Home() {
                 </li>
                 <li>
                   <Link
-                    href="#members"
+                    href="#team"
                     className="text-muted-foreground hover:text-foreground"
                   >
                     Our Members

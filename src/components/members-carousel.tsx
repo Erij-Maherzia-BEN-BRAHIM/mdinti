@@ -12,125 +12,10 @@ import {
   Linkedin,
   Globe,
 } from "lucide-react";
-import Link from "next/link";
-
-// Sample member data (this would come from your API/database in a real app)
-const allMembers = [
-  {
-    id: 1,
-    name: "Ahmed Khelifi",
-    position: "President",
-    bio: "Architect with 15 years of experience in heritage preservation.",
-    image: "/placeholder.svg?height=160&width=160&text=Ahmed",
-    socialMedia: {
-      facebook: "https://facebook.com/ahmed",
-      twitter: "https://twitter.com/ahmed",
-      instagram: "https://instagram.com/ahmed",
-      linkedin: "https://linkedin.com/in/ahmed",
-      website: "",
-    },
-  },
-  {
-    id: 2,
-    name: "Leila Ben Salah",
-    position: "Vice President",
-    bio: "Historian specializing in Tunisian cultural heritage.",
-    image: "/placeholder.svg?height=160&width=160&text=Leila",
-    socialMedia: {
-      facebook: "https://facebook.com/leila",
-      twitter: "",
-      instagram: "https://instagram.com/leila",
-      linkedin: "",
-      website: "https://leilabensalah.com",
-    },
-  },
-  {
-    id: 3,
-    name: "Youssef Trabelsi",
-    position: "Secretary",
-    bio: "Urban planner focused on sustainable development in historic areas.",
-    image: "/placeholder.svg?height=160&width=160&text=Youssef",
-    socialMedia: {
-      facebook: "",
-      twitter: "https://twitter.com/youssef",
-      instagram: "",
-      linkedin: "https://linkedin.com/in/youssef",
-      website: "",
-    },
-  },
-  {
-    id: 4,
-    name: "Fatima Mansouri",
-    position: "Treasurer",
-    bio: "Economist with expertise in cultural tourism and local development.",
-    image: "/placeholder.svg?height=160&width=160&text=Fatima",
-    socialMedia: {
-      facebook: "",
-      twitter: "",
-      instagram: "",
-      linkedin: "",
-      website: "",
-    },
-  },
-  {
-    id: 5,
-    name: "Karim Bouazizi",
-    position: "Project Manager",
-    bio: "Civil engineer specializing in historic building restoration.",
-    image: "/placeholder.svg?height=160&width=160&text=Karim",
-    socialMedia: {
-      facebook: "https://facebook.com/karim",
-      twitter: "",
-      instagram: "",
-      linkedin: "https://linkedin.com/in/karim",
-      website: "",
-    },
-  },
-  {
-    id: 6,
-    name: "Nadia Hamdi",
-    position: "Communications Director",
-    bio: "Marketing specialist with a passion for cultural heritage.",
-    image: "/placeholder.svg?height=160&width=160&text=Nadia",
-    socialMedia: {
-      facebook: "",
-      twitter: "https://twitter.com/nadia",
-      instagram: "https://instagram.com/nadia",
-      linkedin: "",
-      website: "",
-    },
-  },
-  {
-    id: 7,
-    name: "Tarek Mejri",
-    position: "Artisan Liaison",
-    bio: "Master craftsman connecting traditional artisans with modern markets.",
-    image: "/placeholder.svg?height=160&width=160&text=Tarek",
-    socialMedia: {
-      facebook: "https://facebook.com/tarek",
-      twitter: "",
-      instagram: "https://instagram.com/tarek",
-      linkedin: "",
-      website: "",
-    },
-  },
-  {
-    id: 8,
-    name: "Samia Belhadj",
-    position: "Education Coordinator",
-    bio: "Former teacher developing heritage education programs for schools.",
-    image: "/placeholder.svg?height=160&width=160&text=Samia",
-    socialMedia: {
-      facebook: "",
-      twitter: "",
-      instagram: "",
-      linkedin: "https://linkedin.com/in/samia",
-      website: "https://samiabelhadj.com",
-    },
-  },
-];
+import { useMembers } from "@/hooks/useMembers";
 
 export function MembersCarousel() {
+  const { members, isLoadingMembers } = useMembers();
   const carouselRef = useRef<HTMLDivElement>(null);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
@@ -215,6 +100,22 @@ export function MembersCarousel() {
     }
   };
 
+  if (isLoadingMembers) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-muted-foreground">Loading members...</p>
+      </div>
+    );
+  }
+
+  if (members.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-muted-foreground">No members found</p>
+      </div>
+    );
+  }
+
   return (
     <div className="relative mt-12">
       {/* Navigation buttons */}
@@ -248,7 +149,7 @@ export function MembersCarousel() {
         className="flex overflow-x-hidden pb-6 scrollbar-hide snap-x snap-mandatory"
         onScroll={handleScroll}
       >
-        {allMembers.map((member) => (
+        {members.map((member) => (
           <div
             key={member.id}
             className="flex-none w-[280px] mx-4 first:ml-0 last:mr-0 snap-start"
@@ -257,7 +158,7 @@ export function MembersCarousel() {
               <div className="relative h-40 w-40 overflow-hidden rounded-full">
                 <Image
                   src={member.image || "/placeholder.svg"}
-                  alt={`${member.name}`}
+                  alt={member.name}
                   fill
                   className="object-cover"
                 />
@@ -267,7 +168,6 @@ export function MembersCarousel() {
                 <p className="text-sm text-muted-foreground">
                   {member.position}
                 </p>
-                <p className="text-sm line-clamp-3">{member.bio}</p>
                 {renderSocialIcons(member.socialMedia)}
               </div>
             </div>

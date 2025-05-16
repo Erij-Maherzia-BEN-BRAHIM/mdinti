@@ -45,7 +45,7 @@ import Image from "next/image";
 import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/hooks/use-toast";
 import { useTeamMembers } from "@/hooks/useTeamMembers";
-import { TeamMemberCreateInput } from "@/models/TeamMember";
+import { TeamMember, TeamMemberCreateInput, TeamMemberUpdateInput } from "@/models/TeamMember";
 
 export default function TeamPage() {
   const { toast } = useToast();
@@ -54,7 +54,7 @@ export default function TeamPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [currentMember, setCurrentMember] = useState<any>(null);
+  const [currentMember, setCurrentMember] = useState<TeamMember | null>(null);
   const [newMember, setNewMember] = useState<TeamMemberCreateInput>({
     name: "",
     position: "",
@@ -99,7 +99,8 @@ export default function TeamPage() {
         title: "Team member added",
         description: "The new team member has been added successfully.",
       });
-    } catch (error) {
+    } catch (err) {
+      console.error("Failed to add team member:", err);
       toast({
         title: "Error",
         description: "Failed to add team member. Please try again.",
@@ -109,6 +110,7 @@ export default function TeamPage() {
 
   // Edit member
   const handleEditMember = async () => {
+    if (!currentMember) return;
     try {
       await updateMember(currentMember.id, currentMember);
       setIsEditDialogOpen(false);
@@ -116,7 +118,8 @@ export default function TeamPage() {
         title: "Team member updated",
         description: "The team member information has been updated successfully.",
       });
-    } catch (error) {
+    } catch (err) {
+      console.error("Failed to update team member:", err);
       toast({
         title: "Error",
         description: "Failed to update team member. Please try again.",
@@ -126,6 +129,7 @@ export default function TeamPage() {
 
   // Delete member
   const handleDeleteMember = async () => {
+    if (!currentMember) return;
     try {
       await deleteMember(currentMember.id);
       setIsDeleteDialogOpen(false);
@@ -133,7 +137,8 @@ export default function TeamPage() {
         title: "Team member deleted",
         description: "The team member has been deleted successfully.",
       });
-    } catch (error) {
+    } catch (err) {
+      console.error("Failed to delete team member:", err);
       toast({
         title: "Error",
         description: "Failed to delete team member. Please try again.",
@@ -142,7 +147,7 @@ export default function TeamPage() {
   };
 
   // Render social media icons
-  const renderSocialIcons = (socialMedia: any) => {
+  const renderSocialIcons = (socialMedia: TeamMember["socialMedia"]) => {
     return (
       <div className="flex space-x-1">
         {socialMedia.facebook && (

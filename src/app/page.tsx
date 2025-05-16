@@ -15,6 +15,7 @@ import { MembersCarousel } from "@/components/members-carousel";
 import { ActivitiesSection } from "@/components/activities-section";
 import { ContactForm } from "@/components/contact-form";
 import { PartnersSection } from "@/components/partners-section";
+import { MembersSectionWrapper } from "@/components/members-section-wrapper";
 
 export default function Home() {
   return (
@@ -40,10 +41,10 @@ export default function Home() {
               Who We Are
             </Link>
             <Link
-              href="#team"
+              href="#members"
               className="text-sm font-medium hover:text-primary"
             >
-              Team
+              Members
             </Link>
             <Link
               href="#partners"
@@ -56,6 +57,12 @@ export default function Home() {
               className="text-sm font-medium hover:text-primary"
             >
               Activities
+            </Link>
+            <Link
+              href="#team"
+              className="text-sm font-medium hover:text-primary"
+            >
+              Team
             </Link>
           </nav>
           <div className="flex items-center gap-2">
@@ -149,7 +156,13 @@ export default function Home() {
             </div>
           </div>
         </section>
+        <MembersSectionWrapper />
 
+       
+
+        <PartnersSection />
+
+        <ActivitiesSection />
         <section id="team" className="py-16 md:py-24 bg-muted/50">
           <div className="px-8">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -167,11 +180,6 @@ export default function Home() {
           <MembersCarousel />
           </div>
         </section>
-
-        <PartnersSection />
-
-        <ActivitiesSection />
-
         <section className="py-16 md:py-24 bg-[#008067] text-white">
           <div className="px-8">
             <div className="grid gap-8 md:grid-cols-2 items-center">
@@ -196,6 +204,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+
       </main>
       <footer className="border-t bg-muted/50">
         <div className="py-12 px-8">

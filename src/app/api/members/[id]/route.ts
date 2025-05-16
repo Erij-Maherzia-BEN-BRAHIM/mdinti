@@ -11,7 +11,8 @@ export async function GET(
   try {
     const member = await memberService.getMember(params.id);
     return NextResponse.json(member);
-  } catch (error) {
+  } catch (err) {
+    console.error("Failed to fetch member:", err);
     return NextResponse.json(
       { message: 'Failed to fetch member' },
       { status: 500 }
@@ -24,10 +25,11 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const data: MemberUpdateInput = await request.json();
+    const data = (await request.json()) as MemberUpdateInput;
     const member = await memberService.updateMember(params.id, data);
     return NextResponse.json(member);
-  } catch (error) {
+  } catch (err) {
+    console.error("Failed to update member:", err);
     return NextResponse.json(
       { message: 'Failed to update member' },
       { status: 500 }
@@ -42,7 +44,8 @@ export async function DELETE(
   try {
     await memberService.deleteMember(params.id);
     return NextResponse.json({ message: 'Member deleted successfully' });
-  } catch (error) {
+  } catch (err) {
+    console.error("Failed to delete member:", err);
     return NextResponse.json(
       { message: 'Failed to delete member' },
       { status: 500 }

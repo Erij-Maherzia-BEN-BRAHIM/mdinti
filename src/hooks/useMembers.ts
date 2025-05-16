@@ -3,26 +3,27 @@ import { Member, MemberCreateInput, MemberUpdateInput } from '@/models/Member';
 
 export function useMembers() {
   const [members, setMembers] = useState<Member[]>([]);
-  const [isLoadingMembers, setIsLoadingMembers] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchMembers = async () => {
     try {
-      setIsLoadingMembers(true);
+      setLoading(true);
+      setError(null);
       const response = await fetch('/api/members');
       if (!response.ok) throw new Error('Failed to fetch members');
       const data = await response.json();
       setMembers(data);
-      setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch members');
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
-      setIsLoadingMembers(false);
+      setLoading(false);
     }
   };
 
   const createMember = async (data: MemberCreateInput) => {
     try {
+      setError(null);
       const response = await fetch('/api/members', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -33,12 +34,14 @@ export function useMembers() {
       setMembers((prev) => [newMember, ...prev]);
       return newMember;
     } catch (err) {
-      throw err instanceof Error ? err : new Error('Failed to create member');
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      throw err;
     }
   };
 
   const updateMember = async (id: string, data: MemberUpdateInput) => {
     try {
+      setError(null);
       const response = await fetch(`/api/members/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -53,19 +56,22 @@ export function useMembers() {
       );
       return updatedMember;
     } catch (err) {
-      throw err instanceof Error ? err : new Error('Failed to update member');
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      throw err;
     }
   };
 
   const deleteMember = async (id: string) => {
     try {
+      setError(null);
       const response = await fetch(`/api/members/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete member');
       setMembers((prev) => prev.filter((member) => member.id !== id));
     } catch (err) {
-      throw err instanceof Error ? err : new Error('Failed to delete member');
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      throw err;
     }
   };
 
@@ -75,11 +81,11 @@ export function useMembers() {
 
   return {
     members,
-    isLoadingMembers,
+    loading,
     error,
+    fetchMembers,
     createMember,
     updateMember,
     deleteMember,
-    refreshMembers: fetchMembers,
   };
 } 

@@ -1,9 +1,19 @@
+export type MemberCategory =
+  | "Hostels"
+  | "Guest Houses"
+  | "Hotel"
+  | "Librairy"
+  | "Restaurant"
+  | "Artisans"
+  | "others";
+
 export interface Member {
   id: string;
   name: string;
-  position: string;
+  category: MemberCategory;
+  logo: string;
+  owner: string;
   email: string;
-  image: string;
   socialMedia: {
     facebook?: string;
     twitter?: string;
@@ -17,9 +27,10 @@ export interface Member {
 
 export interface MemberCreateInput {
   name: string;
-  position: string;
+  category: MemberCategory;
+  logo: string;
+  owner: string;
   email: string;
-  image: string;
   socialMedia: {
     facebook?: string;
     twitter?: string;
@@ -31,6 +42,9 @@ export interface MemberCreateInput {
 
 export interface MemberUpdateInput {
   name?: string;
+  category?: MemberCategory;
+  logo?: string;
+  owner?: string;
   position?: string;
   email?: string;
   image?: string;

@@ -45,21 +45,39 @@ import Image from "next/image";
 import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/hooks/use-toast";
 import { useMembers } from "@/hooks/useMembers";
-import { MemberCreateInput, MemberUpdateInput } from "@/models/Member";
+import { Member, MemberCreateInput, MemberUpdateInput, MemberCategory } from "@/models/Member";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const categories: MemberCategory[] = [
+  "Hostels",
+  "Guest Houses",
+  "Hotel",
+  "Librairy",
+  "Restaurant",
+  "Artisans",
+  "others",
+];
 
 export default function MembersPage() {
   const { toast } = useToast();
-  const { members, isLoadingMembers, createMember, updateMember, deleteMember } = useMembers();
+  const { members, loading, createMember, updateMember, deleteMember } = useMembers();
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [currentMember, setCurrentMember] = useState<any>(null);
+  const [currentMember, setCurrentMember] = useState<Member | null>(null);
   const [newMember, setNewMember] = useState<MemberCreateInput>({
     name: "",
-    position: "",
+    category: "others",
+    logo: "/placeholder.svg?height=160&width=160&text=New",
+    owner: "",
     email: "",
-    image: "/placeholder.svg?height=160&width=160&text=New",
     socialMedia: {
       facebook: "",
       twitter: "",
@@ -73,7 +91,7 @@ export default function MembersPage() {
   const filteredMembers = members.filter(
     (member) =>
       member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.position.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -83,9 +101,10 @@ export default function MembersPage() {
       await createMember(newMember);
       setNewMember({
         name: "",
-        position: "",
+        category: "others",
+        logo: "/placeholder.svg?height=160&width=160&text=New",
+        owner: "",
         email: "",
-        image: "/placeholder.svg?height=160&width=160&text=New",
         socialMedia: {
           facebook: "",
           twitter: "",
@@ -109,6 +128,7 @@ export default function MembersPage() {
 
   // Edit member
   const handleEditMember = async () => {
+    if (!currentMember) return;
     try {
       await updateMember(currentMember.id, currentMember);
       setIsEditDialogOpen(false);
@@ -126,6 +146,7 @@ export default function MembersPage() {
 
   // Delete member
   const handleDeleteMember = async () => {
+    if (!currentMember) return;
     try {
       await deleteMember(currentMember.id);
       setIsDeleteDialogOpen(false);
@@ -142,7 +163,7 @@ export default function MembersPage() {
   };
 
   // Render social media icons
-  const renderSocialIcons = (socialMedia: any) => {
+  const renderSocialIcons = (socialMedia: Member["socialMedia"]) => {
     return (
       <div className="flex space-x-1">
         {socialMedia.facebook && (
@@ -199,7 +220,7 @@ export default function MembersPage() {
     );
   };
 
-  if (isLoadingMembers) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
         <p className="text-muted-foreground">Loading members...</p>
@@ -242,12 +263,32 @@ export default function MembersPage() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="position">Position</Label>
+                    <Label htmlFor="category">Category</Label>
+                    <Select
+                      value={newMember.category}
+                      onValueChange={(value: MemberCategory) =>
+                        setNewMember({ ...newMember, category: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="owner">Owner</Label>
                     <Input
-                      id="position"
-                      value={newMember.position}
+                      id="owner"
+                      value={newMember.owner}
                       onChange={(e) =>
-                        setNewMember({ ...newMember, position: e.target.value })
+                        setNewMember({ ...newMember, owner: e.target.value })
                       }
                     />
                   </div>
@@ -265,11 +306,11 @@ export default function MembersPage() {
                 </div>
                 <div>
                   <ImageUpload
-                    value={newMember.image}
+                    value={newMember.logo}
                     onChange={(value) =>
-                      setNewMember({ ...newMember, image: value })
+                      setNewMember({ ...newMember, logo: value })
                     }
-                    label="Profile Photo"
+                    label="Logo"
                   />
                 </div>
               </div>
@@ -408,7 +449,8 @@ export default function MembersPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Member</TableHead>
-              <TableHead>Position</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Owner</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Social</TableHead>
               <TableHead className="w-[100px]">Actions</TableHead>
@@ -418,7 +460,7 @@ export default function MembersPage() {
             {filteredMembers.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={5}
+                  colSpan={6}
                   className="text-center text-muted-foreground py-6"
                 >
                   No members found
@@ -431,7 +473,7 @@ export default function MembersPage() {
                     <div className="flex items-center gap-3">
                       <div className="relative h-10 w-10 overflow-hidden rounded-full">
                         <Image
-                          src={member.image || "/placeholder.svg"}
+                          src={member.logo || "/placeholder.svg"}
                           alt={member.name}
                           fill
                           className="object-cover"
@@ -440,7 +482,8 @@ export default function MembersPage() {
                       {member.name}
                     </div>
                   </TableCell>
-                  <TableCell>{member.position}</TableCell>
+                  <TableCell>{member.category}</TableCell>
+                  <TableCell>{member.owner}</TableCell>
                   <TableCell>{member.email}</TableCell>
                   <TableCell>{renderSocialIcons(member.socialMedia)}</TableCell>
                   <TableCell>
@@ -509,14 +552,37 @@ export default function MembersPage() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="edit-position">Position</Label>
+                    <Label htmlFor="edit-category">Category</Label>
+                    <Select
+                      value={currentMember.category}
+                      onValueChange={(value: MemberCategory) =>
+                        setCurrentMember({
+                          ...currentMember,
+                          category: value,
+                        })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="edit-owner">Owner</Label>
                     <Input
-                      id="edit-position"
-                      value={currentMember.position}
+                      id="edit-owner"
+                      value={currentMember.owner}
                       onChange={(e) =>
                         setCurrentMember({
                           ...currentMember,
-                          position: e.target.value,
+                          owner: e.target.value,
                         })
                       }
                     />
@@ -538,11 +604,11 @@ export default function MembersPage() {
                 </div>
                 <div>
                   <ImageUpload
-                    value={currentMember.image}
+                    value={currentMember.logo}
                     onChange={(value) =>
-                      setCurrentMember({ ...currentMember, image: value })
+                      setCurrentMember({ ...currentMember, logo: value })
                     }
-                    label="Profile Photo"
+                    label="Logo"
                   />
                 </div>
               </div>
@@ -680,7 +746,7 @@ export default function MembersPage() {
             <div className="flex items-center gap-4 py-4">
               <div className="relative h-16 w-16 overflow-hidden rounded-full">
                 <Image
-                  src={currentMember.image || "/placeholder.svg"}
+                  src={currentMember.logo || "/placeholder.svg"}
                   alt={currentMember.name}
                   fill
                   className="object-cover"
@@ -689,7 +755,7 @@ export default function MembersPage() {
               <div>
                 <p className="font-medium">{currentMember.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {currentMember.position}
+                  {currentMember.category}
                 </p>
               </div>
             </div>

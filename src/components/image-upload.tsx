@@ -94,7 +94,7 @@ export function ImageUpload({
           type="button"
           variant="outline"
           onClick={() => fileInputRef.current?.click()}
-          className={`w-full border-dashed ${getAspectRatioClass()} flex flex-col items-center justify-center`}
+          className={`w-full h-16 border-dashed ${getAspectRatioClass()} flex flex-col items-center justify-center`}
         >
           <Upload className="h-6 w-6 mb-2" />
           <span className="text-sm">Upload {label}</span>

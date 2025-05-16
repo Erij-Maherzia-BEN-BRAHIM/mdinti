@@ -41,108 +41,100 @@ import {
 import Image from "next/image";
 import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/hooks/use-toast";
-
-// Sample data
-const initialPartners = [
-  {
-    id: 1,
-    name: "UNESCO",
-    type: "International Organization",
-    website: "https://unesco.org",
-    description:
-      "United Nations Educational, Scientific and Cultural Organization",
-    logo: "/placeholder.svg?height=80&width=160&text=UNESCO",
-  },
-  {
-    id: 2,
-    name: "Tunisian Heritage Society",
-    type: "Non-Profit Organization",
-    website: "https://example.com/ths",
-    description:
-      "Local organization dedicated to preserving Tunisian cultural heritage",
-    logo: "/placeholder.svg?height=80&width=160&text=THS",
-  },
-  {
-    id: 3,
-    name: "Artisans Association",
-    type: "Trade Association",
-    website: "https://example.com/artisans",
-    description: "Association of traditional craftspeople from the Médina",
-    logo: "/placeholder.svg?height=80&width=160&text=Artisans",
-  },
-  {
-    id: 4,
-    name: "Ministry of Culture",
-    type: "Government",
-    website: "https://culture.gov.tn",
-    description: "Tunisian Ministry of Cultural Affairs",
-    logo: "/placeholder.svg?height=80&width=160&text=MinCulture",
-  },
-];
+import { usePartners } from "@/hooks/usePartners";
+import { PartnerCreateInput, Partner } from "@/models/Partner";
 
 export default function PartnersPage() {
   const { toast } = useToast();
-  const [partners, setPartners] = useState(initialPartners);
+  const { partners, isLoadingPartners, createPartner, updatePartner, deletePartner } = usePartners();
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [currentPartner, setCurrentPartner] = useState<any>(null);
-  const [newPartner, setNewPartner] = useState({
+  const [currentPartner, setCurrentPartner] = useState<Partner | null>(null);
+  const [newPartner, setNewPartner] = useState<PartnerCreateInput>({
     name: "",
     type: "",
     website: "",
     description: "",
-    logo: "/placeholder.svg?height=80&width=160&text=New",
+    logo: "",
+    status: "active",
   });
 
   // Filter partners based on search query
-  const filteredPartners = partners.filter(
+  const filteredPartners = partners?.filter(
     (partner) =>
       partner.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       partner.type.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Add new partner
-  const handleAddPartner = () => {
-    setPartners([...partners, { id: partners.length + 1, ...newPartner }]);
-    setNewPartner({
-      name: "",
-      type: "",
-      website: "",
-      description: "",
-      logo: "/placeholder.svg?height=80&width=160&text=New",
-    });
-    setIsAddDialogOpen(false);
-    toast({
-      title: "Partner added",
-      description: "The new partner has been added successfully.",
-    });
+  const handleAddPartner = async () => {
+    try {
+      await createPartner.mutateAsync(newPartner);
+      setNewPartner({
+        name: "",
+        type: "",
+        website: "",
+        description: "",
+        logo: "",
+        status: "active",
+      });
+      setIsAddDialogOpen(false);
+      toast({
+        title: "Partner added",
+        description: "The new partner has been added successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add partner. Please try again.",
+      });
+    }
   };
 
   // Edit partner
-  const handleEditPartner = () => {
-    setPartners(
-      partners.map((partner) =>
-        partner.id === currentPartner.id ? currentPartner : partner
-      )
-    );
-    setIsEditDialogOpen(false);
-    toast({
-      title: "Partner updated",
-      description: "The partner information has been updated successfully.",
-    });
+  const handleEditPartner = async () => {
+    if (!currentPartner) return;
+    try {
+      await updatePartner.mutateAsync({
+        id: currentPartner.id,
+        data: currentPartner,
+      });
+      setIsEditDialogOpen(false);
+      toast({
+        title: "Partner updated",
+        description: "The partner information has been updated successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update partner. Please try again.",
+      });
+    }
   };
 
   // Delete partner
-  const handleDeletePartner = () => {
-    setPartners(partners.filter((partner) => partner.id !== currentPartner.id));
-    setIsDeleteDialogOpen(false);
-    toast({
-      title: "Partner deleted",
-      description: "The partner has been deleted successfully.",
-    });
+  const handleDeletePartner = async () => {
+    if (!currentPartner) return;
+    try {
+      await deletePartner.mutateAsync(currentPartner.id);
+      setIsDeleteDialogOpen(false);
+      toast({
+        title: "Partner deleted",
+        description: "The partner has been deleted successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete partner. Please try again.",
+      });
+    }
   };
+
+  if (isLoadingPartners) {
+    return <div>Loading partners...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -218,12 +210,13 @@ export default function PartnersPage() {
                 </div>
                 <div>
                   <ImageUpload
-                    value={newPartner.logo}
+                    value={newPartner.logo ?? ""}
                     onChange={(value) =>
                       setNewPartner({ ...newPartner, logo: value })
                     }
                     label="Organization Logo"
                     aspectRatio="landscape"
+                    className="h-full"
                   />
                 </div>
               </div>
@@ -262,7 +255,7 @@ export default function PartnersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredPartners.length === 0 ? (
+            {!filteredPartners?.length ? (
               <TableRow>
                 <TableCell
                   colSpan={4}
@@ -276,15 +269,17 @@ export default function PartnersPage() {
                 <TableRow key={partner.id}>
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-3">
-                      <div className="relative h-10 w-20 overflow-hidden">
-                        <Image
-                          src={partner.logo || "/placeholder.svg"}
-                          alt={partner.name}
-                          width={80}
-                          height={40}
-                          className="object-contain"
-                        />
-                      </div>
+                      {partner.logo && (
+                        <div className="relative h-10 w-20 overflow-hidden">
+                          <Image
+                            src={partner.logo}
+                            alt={partner.name}
+                            width={80}
+                            height={40}
+                            className="object-contain"
+                          />
+                        </div>
+                      )}
                       {partner.name}
                     </div>
                   </TableCell>
@@ -408,12 +403,13 @@ export default function PartnersPage() {
                 </div>
                 <div>
                   <ImageUpload
-                    value={currentPartner.logo}
+                    value={currentPartner.logo ?? ""}
                     onChange={(value) =>
                       setCurrentPartner({ ...currentPartner, logo: value })
                     }
                     label="Organization Logo"
                     aspectRatio="landscape"
+                    className="h-full"
                   />
                 </div>
               </div>
@@ -445,7 +441,7 @@ export default function PartnersPage() {
             <div className="flex items-center gap-4 py-4">
               <div className="relative h-12 w-24 overflow-hidden">
                 <Image
-                  src={currentPartner.logo || "/placeholder.svg"}
+                  src={currentPartner.logo?? ""}
                   alt={currentPartner.name}
                   width={96}
                   height={48}

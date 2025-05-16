@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-8">
-        <div className="container flex h-16 items-center justify-between py-4">
+        <div className="flex h-16 items-center justify-between py-4">
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">
               <Image
@@ -90,7 +90,7 @@ export default function Home() {
       <main className="flex-1">
         <section className="relative">
           <div className="absolute inset-0 bg-[url('/hero.jpg?height=1080&width=1920')] bg-cover bg-center opacity-20"></div>
-          <div className="container relative flex flex-col items-center justify-center space-y-8 py-24 text-center md:py-32 lg:py-40 px-8">
+          <div className="relative flex flex-col items-center justify-center space-y-8 py-24 text-center md:py-32 lg:py-40 px-8">
             <div className="space-y-4">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
                 Preserving the Heritage of Médina Tunis
@@ -112,7 +112,7 @@ export default function Home() {
         </section>
 
         <section id="about" className="py-16 md:py-24">
-          <div className="container px-8">
+          <div className="px-8">
             <div className="grid gap-8 md:grid-cols-2 items-center">
               <div className="space-y-4">
                 <div className="inline-block rounded-lg bg-[#ffc845]/20 px-3 py-1 text-sm text-[#ffc845]">
@@ -150,7 +150,7 @@ export default function Home() {
         </section>
 
         <section id="members" className="py-16 md:py-24 bg-muted/50">
-          <div className="container px-8">
+          <div className="px-8">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="inline-block rounded-lg bg-[#ffc845]/20 px-3 py-1 text-sm text-[#ffc845]">
                 Our Members
@@ -168,7 +168,7 @@ export default function Home() {
         </section>
 
         <section id="partners" className="py-16 md:py-24">
-          <div className="container px-8">
+          <div className="px-8">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="inline-block rounded-lg bg-[#ffc845]/20 px-3 py-1 text-sm text-[#ffc845]">
                 Our Partners
@@ -203,7 +203,7 @@ export default function Home() {
         <ActivitiesSection />
 
         <section className="py-16 md:py-24 bg-[#008067] text-white">
-          <div className="container px-8">
+          <div className="px-8">
             <div className="grid gap-8 md:grid-cols-2 items-center">
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
@@ -228,7 +228,7 @@ export default function Home() {
         </section>
       </main>
       <footer className="border-t bg-muted/50">
-        <div className="container py-12 px-8">
+        <div className="py-12 px-8">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-4">
               <Image

@@ -21,24 +21,32 @@ export default function LoginPage() {
     setIsLoading(true);
     setError("");
 
-    // This is a mock login - in a real app, you would validate credentials against a backend
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-      // For demo purposes, accept any non-empty credentials
-      if (email && password) {
-        router.push("/admin");
-      } else {
-        setError("Please enter both email and password");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
       }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      if (data.user.role === "admin") router.push("/admin");
     } catch (err) {
-      setError("An error occurred during login");
+      const errorMessage =
+        err instanceof Error ? err.message : "An error occurred during login";
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">

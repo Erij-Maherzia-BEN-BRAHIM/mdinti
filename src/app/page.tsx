@@ -14,12 +14,14 @@ import { ThemeSwitcher } from "@/components/theme-switcher";
 import { MembersCarousel } from "@/components/members-carousel";
 import { ActivitiesSection } from "@/components/activities-section";
 import { ContactForm } from "@/components/contact-form";
+import { PartnersSection } from "@/components/partners-section";
+import { MembersSectionWrapper } from "@/components/members-section-wrapper";
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-8">
-        <div className="container flex h-16 items-center justify-between py-4">
+        <div className="flex h-16 items-center justify-between py-4">
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">
               <Image
@@ -56,6 +58,12 @@ export default function Home() {
             >
               Activities
             </Link>
+            <Link
+              href="#team"
+              className="text-sm font-medium hover:text-primary"
+            >
+              Team
+            </Link>
           </nav>
           <div className="flex items-center gap-2">
             {/* <div className="flex items-center gap-2">
@@ -90,7 +98,7 @@ export default function Home() {
       <main className="flex-1">
         <section className="relative">
           <div className="absolute inset-0 bg-[url('/hero.jpg?height=1080&width=1920')] bg-cover bg-center opacity-20"></div>
-          <div className="container relative flex flex-col items-center justify-center space-y-8 py-24 text-center md:py-32 lg:py-40 px-8">
+          <div className="relative flex flex-col items-center justify-center space-y-8 py-24 text-center md:py-32 lg:py-40 px-8">
             <div className="space-y-4">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
                 Preserving the Heritage of Médina Tunis
@@ -112,7 +120,7 @@ export default function Home() {
         </section>
 
         <section id="about" className="py-16 md:py-24">
-          <div className="container px-8">
+          <div className="px-8">
             <div className="grid gap-8 md:grid-cols-2 items-center">
               <div className="space-y-4">
                 <div className="inline-block rounded-lg bg-[#ffc845]/20 px-3 py-1 text-sm text-[#ffc845]">
@@ -148,12 +156,18 @@ export default function Home() {
             </div>
           </div>
         </section>
+        <MembersSectionWrapper />
 
-        <section id="members" className="py-16 md:py-24 bg-muted/50">
-          <div className="container px-8">
+       
+
+        <PartnersSection />
+
+        <ActivitiesSection />
+        <section id="team" className="py-16 md:py-24 bg-muted/50">
+          <div className="px-8">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="inline-block rounded-lg bg-[#ffc845]/20 px-3 py-1 text-sm text-[#ffc845]">
-                Our Members
+                Our Team
               </div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                 The Team Behind mdinti
@@ -163,47 +177,11 @@ export default function Home() {
                 architecture, history, economics, and community development.
               </p>
             </div>
-            <MembersCarousel />
+          <MembersCarousel />
           </div>
         </section>
-
-        <section id="partners" className="py-16 md:py-24">
-          <div className="container px-8">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="inline-block rounded-lg bg-[#ffc845]/20 px-3 py-1 text-sm text-[#ffc845]">
-                Our Partners
-              </div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-                Working Together for Médina
-              </h2>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                We collaborate with local and international organizations to
-                achieve our goals.
-              </p>
-            </div>
-            <div className="mt-12 grid grid-cols-2 gap-8 md:grid-cols-4">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-center p-6 bg-background rounded-lg border"
-                >
-                  <Image
-                    src={`/placeholder.svg?height=80&width=160&text=Partner+${i}`}
-                    alt={`Partner ${i}`}
-                    width={160}
-                    height={80}
-                    className="max-h-12 w-auto"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <ActivitiesSection />
-
         <section className="py-16 md:py-24 bg-[#008067] text-white">
-          <div className="container px-8">
+          <div className="px-8">
             <div className="grid gap-8 md:grid-cols-2 items-center">
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
@@ -226,9 +204,10 @@ export default function Home() {
             </div>
           </div>
         </section>
+
       </main>
       <footer className="border-t bg-muted/50">
-        <div className="container py-12 px-8">
+        <div className="py-12 px-8">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-4">
               <Image
@@ -256,10 +235,10 @@ export default function Home() {
                 </li>
                 <li>
                   <Link
-                    href="#members"
+                    href="#team"
                     className="text-muted-foreground hover:text-foreground"
                   >
-                    Our Members
+                    Our Team
                   </Link>
                 </li>
                 <li>

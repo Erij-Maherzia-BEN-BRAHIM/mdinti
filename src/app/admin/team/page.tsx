@@ -44,40 +44,22 @@ import {
 import Image from "next/image";
 import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/hooks/use-toast";
-import { useMembers } from "@/hooks/useMembers";
-import { Member, MemberCreateInput, MemberUpdateInput, MemberCategory } from "@/models/Member";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useTeamMembers } from "@/hooks/useTeamMembers";
+import { TeamMember, TeamMemberCreateInput, TeamMemberUpdateInput } from "@/models/TeamMember";
 
-const categories: MemberCategory[] = [
-  "Hostels",
-  "Guest Houses",
-  "Hotel",
-  "Librairy",
-  "Restaurant",
-  "Artisans",
-  "others",
-];
-
-export default function MembersPage() {
+export default function TeamPage() {
   const { toast } = useToast();
-  const { members, loading, createMember, updateMember, deleteMember } = useMembers();
+  const { members, isLoadingMembers, createMember, updateMember, deleteMember } = useTeamMembers();
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [currentMember, setCurrentMember] = useState<Member | null>(null);
-  const [newMember, setNewMember] = useState<MemberCreateInput>({
+  const [currentMember, setCurrentMember] = useState<TeamMember | null>(null);
+  const [newMember, setNewMember] = useState<TeamMemberCreateInput>({
     name: "",
-    category: "others",
-    logo: "/placeholder.svg?height=160&width=160&text=New",
-    owner: "",
+    position: "",
     email: "",
+    image: "/placeholder.svg?height=160&width=160&text=New",
     socialMedia: {
       facebook: "",
       twitter: "",
@@ -91,7 +73,7 @@ export default function MembersPage() {
   const filteredMembers = members.filter(
     (member) =>
       member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.position.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -101,10 +83,9 @@ export default function MembersPage() {
       await createMember(newMember);
       setNewMember({
         name: "",
-        category: "others",
-        logo: "/placeholder.svg?height=160&width=160&text=New",
-        owner: "",
+        position: "",
         email: "",
+        image: "/placeholder.svg?height=160&width=160&text=New",
         socialMedia: {
           facebook: "",
           twitter: "",
@@ -115,13 +96,14 @@ export default function MembersPage() {
       });
       setIsAddDialogOpen(false);
       toast({
-        title: "Member added",
-        description: "The new member has been added successfully.",
+        title: "Team member added",
+        description: "The new team member has been added successfully.",
       });
-    } catch (error) {
+    } catch (err) {
+      console.error("Failed to add team member:", err);
       toast({
         title: "Error",
-        description: "Failed to add member. Please try again.",
+        description: "Failed to add team member. Please try again.",
       });
     }
   };
@@ -133,13 +115,14 @@ export default function MembersPage() {
       await updateMember(currentMember.id, currentMember);
       setIsEditDialogOpen(false);
       toast({
-        title: "Member updated",
-        description: "The member information has been updated successfully.",
+        title: "Team member updated",
+        description: "The team member information has been updated successfully.",
       });
-    } catch (error) {
+    } catch (err) {
+      console.error("Failed to update team member:", err);
       toast({
         title: "Error",
-        description: "Failed to update member. Please try again.",
+        description: "Failed to update team member. Please try again.",
       });
     }
   };
@@ -151,19 +134,20 @@ export default function MembersPage() {
       await deleteMember(currentMember.id);
       setIsDeleteDialogOpen(false);
       toast({
-        title: "Member deleted",
-        description: "The member has been deleted successfully.",
+        title: "Team member deleted",
+        description: "The team member has been deleted successfully.",
       });
-    } catch (error) {
+    } catch (err) {
+      console.error("Failed to delete team member:", err);
       toast({
         title: "Error",
-        description: "Failed to delete member. Please try again.",
+        description: "Failed to delete team member. Please try again.",
       });
     }
   };
 
   // Render social media icons
-  const renderSocialIcons = (socialMedia: Member["socialMedia"]) => {
+  const renderSocialIcons = (socialMedia: TeamMember["socialMedia"]) => {
     return (
       <div className="flex space-x-1">
         {socialMedia.facebook && (
@@ -220,10 +204,10 @@ export default function MembersPage() {
     );
   };
 
-  if (loading) {
+  if (isLoadingMembers) {
     return (
       <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">Loading members...</p>
+        <p className="text-muted-foreground">Loading team members...</p>
       </div>
     );
   }
@@ -232,21 +216,21 @@ export default function MembersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Members</h1>
-          <p className="text-muted-foreground">Manage organization members</p>
+          <h1 className="text-3xl font-bold tracking-tight">Team Members</h1>
+          <p className="text-muted-foreground">Manage organization team members</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button className="bg-[#008067] hover:bg-[#006a55]">
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Member
+              Add Team Member
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Add New Member</DialogTitle>
+              <DialogTitle>Add New Team Member</DialogTitle>
               <DialogDescription>
-                Add a new member to the organization.
+                Add a new team member to the organization.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 py-4">
@@ -263,32 +247,12 @@ export default function MembersPage() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="category">Category</Label>
-                    <Select
-                      value={newMember.category}
-                      onValueChange={(value: MemberCategory) =>
-                        setNewMember({ ...newMember, category: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="owner">Owner</Label>
+                    <Label htmlFor="position">Position</Label>
                     <Input
-                      id="owner"
-                      value={newMember.owner}
+                      id="position"
+                      value={newMember.position}
                       onChange={(e) =>
-                        setNewMember({ ...newMember, owner: e.target.value })
+                        setNewMember({ ...newMember, position: e.target.value })
                       }
                     />
                   </div>
@@ -306,11 +270,11 @@ export default function MembersPage() {
                 </div>
                 <div>
                   <ImageUpload
-                    value={newMember.logo}
+                    value={newMember.image}
                     onChange={(value) =>
-                      setNewMember({ ...newMember, logo: value })
+                      setNewMember({ ...newMember, image: value })
                     }
-                    label="Logo"
+                    label="Profile Photo"
                   />
                 </div>
               </div>
@@ -428,7 +392,7 @@ export default function MembersPage() {
               >
                 Cancel
               </Button>
-              <Button onClick={handleAddMember}>Add Member</Button>
+              <Button onClick={handleAddMember}>Add Team Member</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -437,7 +401,7 @@ export default function MembersPage() {
       <div className="flex items-center gap-2">
         <Search className="h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search members..."
+          placeholder="Search team members..."
           className="max-w-sm"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -448,9 +412,8 @@ export default function MembersPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Member</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Owner</TableHead>
+              <TableHead>Team Member</TableHead>
+              <TableHead>Position</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Social</TableHead>
               <TableHead className="w-[100px]">Actions</TableHead>
@@ -460,10 +423,10 @@ export default function MembersPage() {
             {filteredMembers.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={5}
                   className="text-center text-muted-foreground py-6"
                 >
-                  No members found
+                  No team members found
                 </TableCell>
               </TableRow>
             ) : (
@@ -473,7 +436,7 @@ export default function MembersPage() {
                     <div className="flex items-center gap-3">
                       <div className="relative h-10 w-10 overflow-hidden rounded-full">
                         <Image
-                          src={member.logo || "/placeholder.svg"}
+                          src={member.image || "/placeholder.svg"}
                           alt={member.name}
                           fill
                           className="object-cover"
@@ -482,8 +445,7 @@ export default function MembersPage() {
                       {member.name}
                     </div>
                   </TableCell>
-                  <TableCell>{member.category}</TableCell>
-                  <TableCell>{member.owner}</TableCell>
+                  <TableCell>{member.position}</TableCell>
                   <TableCell>{member.email}</TableCell>
                   <TableCell>{renderSocialIcons(member.socialMedia)}</TableCell>
                   <TableCell>
@@ -529,9 +491,9 @@ export default function MembersPage() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Edit Member</DialogTitle>
+            <DialogTitle>Edit Team Member</DialogTitle>
             <DialogDescription>
-              Make changes to the member information.
+              Make changes to the team member information.
             </DialogDescription>
           </DialogHeader>
           {currentMember && (
@@ -552,37 +514,14 @@ export default function MembersPage() {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="edit-category">Category</Label>
-                    <Select
-                      value={currentMember.category}
-                      onValueChange={(value: MemberCategory) =>
-                        setCurrentMember({
-                          ...currentMember,
-                          category: value,
-                        })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="edit-owner">Owner</Label>
+                    <Label htmlFor="edit-position">Position</Label>
                     <Input
-                      id="edit-owner"
-                      value={currentMember.owner}
+                      id="edit-position"
+                      value={currentMember.position}
                       onChange={(e) =>
                         setCurrentMember({
                           ...currentMember,
-                          owner: e.target.value,
+                          position: e.target.value,
                         })
                       }
                     />
@@ -604,11 +543,11 @@ export default function MembersPage() {
                 </div>
                 <div>
                   <ImageUpload
-                    value={currentMember.logo}
+                    value={currentMember.image}
                     onChange={(value) =>
-                      setCurrentMember({ ...currentMember, logo: value })
+                      setCurrentMember({ ...currentMember, image: value })
                     }
-                    label="Logo"
+                    label="Profile Photo"
                   />
                 </div>
               </div>
@@ -738,7 +677,7 @@ export default function MembersPage() {
           <DialogHeader>
             <DialogTitle>Confirm Deletion</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this member? This action cannot be
+              Are you sure you want to delete this team member? This action cannot be
               undone.
             </DialogDescription>
           </DialogHeader>
@@ -746,7 +685,7 @@ export default function MembersPage() {
             <div className="flex items-center gap-4 py-4">
               <div className="relative h-16 w-16 overflow-hidden rounded-full">
                 <Image
-                  src={currentMember.logo || "/placeholder.svg"}
+                  src={currentMember.image || "/placeholder.svg"}
                   alt={currentMember.name}
                   fill
                   className="object-cover"
@@ -755,7 +694,7 @@ export default function MembersPage() {
               <div>
                 <p className="font-medium">{currentMember.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {currentMember.category}
+                  {currentMember.position}
                 </p>
               </div>
             </div>
@@ -775,4 +714,4 @@ export default function MembersPage() {
       </Dialog>
     </div>
   );
-}
+} 

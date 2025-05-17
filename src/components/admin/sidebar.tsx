@@ -12,6 +12,7 @@ import {
   LogOut,
   Menu,
   X,
+  UserPlus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -29,6 +30,12 @@ const routes = [
     icon: UsersRound,
     href: "/admin/members",
     color: "text-violet-500",
+  },
+  {
+    label: "Team Members",
+    icon: UserPlus,
+    href: "/admin/team",
+    color: "text-pink-700",
   },
   {
     label: "Partners",

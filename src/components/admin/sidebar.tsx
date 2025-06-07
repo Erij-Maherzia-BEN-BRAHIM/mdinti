@@ -8,11 +8,11 @@ import {
   UsersRound,
   Building2,
   Activity,
-  Settings,
   LogOut,
   Menu,
   X,
   UserPlus,
+  BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -38,6 +38,12 @@ const routes = [
     color: "text-pink-700",
   },
   {
+    label: "Experiences",
+    icon: BookOpen,
+    href: "/admin/experiences",
+    color: "text-orange-700",
+  },
+  {
     label: "Partners",
     icon: Building2,
     href: "/admin/partners",
@@ -48,11 +54,6 @@ const routes = [
     icon: Activity,
     href: "/admin/activities",
     color: "text-orange-500",
-  },
-  {
-    label: "Settings",
-    icon: Settings,
-    href: "/admin/settings",
   },
 ];
 

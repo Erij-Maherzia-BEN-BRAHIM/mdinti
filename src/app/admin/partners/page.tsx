@@ -276,7 +276,7 @@ export default function PartnersPage() {
                             alt={partner.name}
                             width={80}
                             height={40}
-                            className="object-contain"
+                            className="object-contain size-full"
                           />
                         </div>
                       )}

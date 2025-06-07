@@ -1,21 +1,21 @@
-import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import {
-  Instagram,
-  Facebook,
-  Twitter,
-  MapPin,
-  Mail,
-  Phone,
-} from "lucide-react";
-import { LanguageSwitcher } from "@/components/language-switcher";
-import { ThemeSwitcher } from "@/components/theme-switcher";
-import { MembersCarousel } from "@/components/members-carousel";
+import { AboutSection } from "@/components/about-section";
 import { ActivitiesSection } from "@/components/activities-section";
 import { ContactForm } from "@/components/contact-form";
-import { PartnersSection } from "@/components/partners-section";
+import { ExperiencesSection } from "@/components/experiences-section";
+import { MembersCarousel } from "@/components/members-carousel";
 import { MembersSectionWrapper } from "@/components/members-section-wrapper";
+import { PartnersSection } from "@/components/partners-section";
+import { Button } from "@/components/ui/button";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  Mail,
+  Phone,
+  Twitter,
+} from "lucide-react";
+import { MapPin } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -118,51 +118,12 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        <section id="about" className="py-16 md:py-24">
-          <div className="px-8">
-            <div className="grid gap-8 md:grid-cols-2 items-center">
-              <div className="space-y-4">
-                <div className="inline-block rounded-lg bg-[#ffc845]/20 px-3 py-1 text-sm text-[#ffc845]">
-                  Who We Are
-                </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-                  Guardians of Tunis Médina
-                </h2>
-                <p className="text-muted-foreground">
-                  mdinti is an Economic Interest Grouping dedicated to the
-                  preservation and revitalization of the historic Médina of
-                  Tunis. Founded by passionate locals and experts, we work to
-                  protect the cultural heritage while promoting sustainable
-                  economic growth.
-                </p>
-                <p className="text-muted-foreground">
-                  Our mission is to balance preservation with progress, ensuring
-                  that the ancient heart of Tunis continues to beat strongly for
-                  generations to come.
-                </p>
-                <Button className="bg-[#008067] hover:bg-[#006a55]">
-                  Learn More About Us
-                </Button>
-              </div>
-              <div className="relative h-[400px] overflow-hidden rounded-lg">
-                <Image
-                  src="/hero2.jpg"
-                  alt="Médina of Tunis"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
+        <AboutSection />
         <MembersSectionWrapper />
-
-       
-
+        <ExperiencesSection />
         <PartnersSection />
 
-        <ActivitiesSection />
+        {/* <ActivitiesSection /> */}
         <section id="team" className="py-16 md:py-24 bg-muted/50">
           <div className="px-8">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -177,7 +138,7 @@ export default function Home() {
                 architecture, history, economics, and community development.
               </p>
             </div>
-          <MembersCarousel />
+            <MembersCarousel />
           </div>
         </section>
         <section className="py-16 md:py-24 bg-[#008067] text-white">
@@ -204,7 +165,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
       </main>
       <footer className="border-t bg-muted/50">
         <div className="py-12 px-8">
@@ -295,14 +255,14 @@ export default function Home() {
                   href="#"
                   className="text-muted-foreground hover:text-foreground"
                 >
-                  <Facebook className="h-5 w-5" />
+                  <FacebookIcon className="h-5 w-5" />
                   <span className="sr-only">Facebook</span>
                 </Link>
                 <Link
                   href="#"
                   className="text-muted-foreground hover:text-foreground"
                 >
-                  <Instagram className="h-5 w-5" />
+                  <InstagramIcon className="h-5 w-5" />
                   <span className="sr-only">Instagram</span>
                 </Link>
                 <Link
